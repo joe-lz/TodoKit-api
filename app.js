@@ -7,8 +7,8 @@ var bodyParser = require('body-parser');
 
 // 链接数据库vi
 let mongoose = require('mongoose');
-// let dbUrl = 'mongodb://jeodiong:1qaz2wsx@localhost/qaf-t';
-let dbUrl = 'mongodb://localhost/pm-t';
+let dbUrl = 'mongodb://jeodiong:1qaz2wsx@localhost/pm-t';
+// let dbUrl = 'mongodb://localhost/pm-t';
 mongoose.connect(dbUrl);
 
 var app = express();
