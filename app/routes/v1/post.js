@@ -1,0 +1,97 @@
+var express = require('express');
+var router = express.Router();
+
+let Post = require('../../models/postModel')
+let Log = require('../../models/logModel')
+let Config = require('./_config.js')
+let _md = require('./_md.js')
+
+// 创建任务
+router.post('/create', _md.signinRequired, (req, res, next) => {
+  let access_token = req.body.access_token
+  let body = req.body.data
+  // 1、创建curPost
+  _md.decodeToken(access_token, (data) => {
+    let userId = data.data._id
+    body.createrId = userId
+    let newPost = new Post(body)
+    newPost.save((err, curPost) => {
+      if (err) {
+        _md.return2(err, res)
+        return
+      }
+      // 2、创建第一个日志
+      let logForm = {
+        postId: curPost._id,
+        from: userId,
+        to: curPost.to,
+        action: 1,
+        content: ''
+      }
+      let newLog = new Log(logForm)
+      newLog.save((err, curLog) => {
+        if (err) {
+          _md.return2(err, res)
+          return
+        }
+        _md.return0({curLog}, res)
+      })
+    })
+  })
+})
+
+// 获取指派给我的任务
+router.post('/my', _md.signinRequired, (req, res, next) => {
+  let access_token = req.body.access_token
+  let body = req.body.data
+  let productId = body.productId
+  _md.decodeToken(access_token, (data) => {
+    let userId = data.data._id
+    Post.find({to: userId, productId}).sort({ createdAt: -1 }).exec((err, allData) => {
+      if (err) {
+        _md.return2(err, res)
+        return
+      }
+      _md.return0({
+        allData
+      }, res)
+    })
+  })
+})
+
+// 获取全部的任务
+router.post('/my', _md.signinRequired, (req, res, next) => {
+  let access_token = req.body.access_token
+  let body = req.body.data
+  let productId = body.productId
+  Post.find({productId: productId, level: body.level}).sort({ createdAt: -1 }).exec((err, allData) => {
+    if (err) {
+      _md.return2(err, res)
+      return
+    }
+    _md.return0({
+      allData
+    }, res)
+  })
+})
+// 获取指派给我的任务Matrix
+router.post('/myMatrix', _md.signinRequired, (req, res, next) => {
+  let access_token = req.body.access_token
+  let body = req.body.data
+  let productId = body.productId
+  let isImportant = body.isImportant
+  let isUrgent = body.isUrgent
+  _md.decodeToken(access_token, (data) => {
+    let userId = data.data._id
+    Post.find({to: userId, productId, isImportant, isUrgent}).sort({ createdAt: -1 }).exec((err, allData) => {
+      if (err) {
+        _md.return2(err, res)
+        return
+      }
+      _md.return0({
+        allData
+      }, res)
+    })
+  })
+})
+module.exports = router;

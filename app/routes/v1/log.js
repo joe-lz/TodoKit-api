@@ -1,0 +1,124 @@
+var express = require('express');
+var router = express.Router();
+
+let Log = require('../../models/logModel')
+let Post = require('../../models/postModel')
+let Config = require('./_config.js')
+let _md = require('./_md.js')
+
+// 创建日志
+router.post('/create', _md.signinRequired, (req, res, next) => {
+  let access_token = req.body.access_token
+  let body = req.body.data
+  if (body.action == 1) {
+    // body.action === 1 指派
+    // 1、将post.to 改为body.to
+    Post.update({_id: body.postId}, {$set: {to: body.to}}).exec((err, result) => {
+      if (err) {
+        _md.return2(err, res)
+        return
+      }
+      _md.decodeToken(access_token, (data) => {
+        let userId = data.data._id
+        // 2、创建curLog
+        body.from = userId
+        let newLog = new Log(body)
+        newLog.save((err, curLog) => {
+          if (err) {
+            _md.return2(err, res)
+            return
+          }
+          _md.return0({curLog}, res)
+        })
+      })
+    })
+    // 2、创建日志
+  } else if (body.action == 2) {
+    // body.action === 2 完成
+    // 1、将post.to 改为body.to
+    Post.update({_id: body.postId}, {$set: {to: body.to, level: 2}}).exec((err, result) => {
+      if (err) {
+        _md.return2(err, res)
+        return
+      }
+      _md.decodeToken(access_token, (data) => {
+        let userId = data.data._id
+        // 2、创建curLog
+        body.from = userId
+        let newLog = new Log(body)
+        newLog.save((err, curLog) => {
+          if (err) {
+            _md.return2(err, res)
+            return
+          }
+          _md.return0({curLog}, res)
+        })
+      })
+    })
+  } else if (body.action == 3) {
+    // body.action === 3 拒绝
+  } else if (body.action == 4) {
+    // body.action === 4 评论
+    // 1、拿到from
+    _md.decodeToken(access_token, (data) => {
+      let userId = data.data._id
+      // 2、创建curLog
+      body.from = userId
+      let newLog = new Log(body)
+      newLog.save((err, curLog) => {
+        if (err) {
+          _md.return2(err, res)
+          return
+        }
+        _md.return0({curLog}, res)
+      })
+    })
+  }
+})
+
+// alllog  by postId
+router.post('/all', _md.signinRequired, (req, res, next) => {
+  let access_token = req.body.access_token
+  let body = req.body.data
+  // 1 查找出该post的所有日志
+  Log.find({postId: body.postId}).sort({ createdAt: -1 }).populate('from').populate('to').exec((err, allData) => {
+    if (err) {
+      _md.return2(err, res)
+      return
+    }
+    // 2 把该post的日志中to是我的设置为已读
+    _md.decodeToken(access_token, (data) => {
+      let userId = data.data._id
+      Log.update({postId: body.postId, to: userId}, {$set: {isRead: true}},{multi: true}).exec((err2, result) => {
+        if (err2) {
+          _md.return2(err2, res)
+          return
+        }
+        _md.return0({
+          allData
+        }, res)
+      })
+    })
+  })
+})
+// alllog my 我的消息
+router.post('/my', _md.signinRequired, (req, res, next) => {
+  let access_token = req.body.access_token
+  let body = req.body.data
+  _md.decodeToken(access_token, (data) => {
+    let userId = data.data._id
+    // 2、创建curLog
+    Log.find({productId: body.productId, to: userId, isRead: body.isRead}).sort({ createdAt: -1 }).populate('from').populate('to').populate('postId').exec((err, allData) => {
+      if (err) {
+        _md.return2(err, res)
+        return
+      }
+      _md.return0({
+        allData
+      }, res)
+    })
+  })
+})
+
+
+module.exports = router;

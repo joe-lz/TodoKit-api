@@ -1,0 +1,159 @@
+var express = require('express');
+var router = express.Router();
+
+let P2u = require('../../models/p2uModel')
+let Product = require('../../models/productModel')
+let User = require('../../models/userModel')
+let Config = require('./_config.js')
+let _md = require('./_md.js')
+
+// 获取我的产品
+router.post('/my', _md.signinRequired, (req, res, next) => {
+  let access_token = req.body.access_token
+  let body = req.body.data
+  _md.decodeToken(access_token, (data) => {
+    let userId = data.data._id
+    P2u.find({userId: userId}).populate('productId').exec((err, allData) => {
+      if (err) {
+        _md.return2(err, res)
+        return
+      }
+      _md.return0({
+        allData
+      }, res)
+    })
+  })
+})
+// 获取产品消息
+router.post('/info', _md.signinRequired, (req, res, next) => {
+  let access_token = req.body.access_token
+  let body = req.body.data
+  Product.findOne({_id: body.productId}).exec((err, curProduct) => {
+    if (err) {
+      _md.return2(err, res)
+      return
+    }
+    _md.return0({
+      curProduct
+    }, res)
+  })
+})
+// 更新产品消息
+router.post('/setting', _md.signinRequired, (req, res, next) => {
+  let access_token = req.body.access_token
+  let body = req.body.data
+  Product.update({_id: body._id}, {$set: body}).exec((err, result) => {
+    if (err) {
+      _md.return2(err, res)
+      return
+    }
+    _md.return0({
+      result
+    }, res)
+  })
+})
+// 创建商品
+router.post('/create', _md.signinRequired, (req, res, next) => {
+  let access_token = req.body.access_token
+  let body = req.body.data
+  // 1、创建product
+  let newProduct = new Product(body)
+  newProduct.save((err, curProduct) => {
+    if (err) {
+      _md.return2(err, res)
+      return
+    }
+    // 2、获取userId  productId
+    _md.decodeToken(access_token, (data) => {
+      let userId = data.data._id
+      let productId = curProduct._id
+      // 3、创建p2u
+      let newP2u = new P2u({userId, productId})
+      newP2u.save((err, curP2u) => {
+        if (err) {
+          _md.return2(err, res)
+          return
+        }
+        _md.return0({}, res)
+      })
+    })
+  })
+})
+
+// 添加成员
+router.post('/addUser', _md.signinRequired, (req, res, next) => {
+  let access_token = req.body.access_token
+  let body = req.body.data
+  // 1、查找产品是否存在 productId
+  Product.findOne({_id: body.productId}).exec((err, curProduct) => {
+    if (err) {
+      _md.return2(err, res)
+      return
+    }
+    if (!curProduct) {
+      _md.return1('产品不存在', {}, res)
+      return
+    }
+    // 2、查找用户是否存在 userId
+    User.findOne({email: body.email}).exec((err, curUser) => {
+      if (err) {
+        _md.return2(err, res)
+        return
+      }
+      if (!curUser) {
+        _md.return1('用户不存在', {}, res)
+        return
+      }
+      // 3、查找是否已经存在
+      let userId = curUser._id
+      let productId = curProduct._id
+      P2u.findOne({userId, productId}).exec((err, curP2u) => {
+        if (err) {
+          _md.return2(err, res)
+          return
+        }
+        if (curP2u) {
+          _md.return1('用户已经存在，不要重复添加', {}, res)
+          return
+        }
+        // 4、创建p2u
+        let newP2u = new P2u({userId, productId})
+        newP2u.save((err, curP2u) => {
+          if (err) {
+            _md.return2(err, res)
+            return
+          }
+          _md.return0({}, res)
+        })
+      })
+    })
+  })
+})
+
+// 获取成员
+router.post('/allUser', _md.signinRequired, (req, res, next) => {
+  let access_token = req.body.access_token
+  let body = req.body.data
+  let productId = body.productId
+  P2u.find({productId}).populate('userId').exec((err, allData) => {
+    if (err) {
+      _md.return2(err, res)
+      return
+    }
+    _md.return0({allData}, res)
+  })
+})
+// 删除成员
+router.post('/delUser', _md.signinRequired, (req, res, next) => {
+  let access_token = req.body.access_token
+  let body = req.body.data
+  let userId = body.userId
+  P2u.remove({userId}).exec((err, result) => {
+    if (err) {
+      _md.return2(err, res)
+      return
+    }
+    _md.return0({result}, res)
+  })
+})
+module.exports = router;
