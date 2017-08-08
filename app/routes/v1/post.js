@@ -14,6 +14,7 @@ router.post('/create', _md.signinRequired, (req, res, next) => {
   _md.decodeToken(access_token, (data) => {
     let userId = data.data._id
     body.createrId = userId
+    body.level = 1
     let newPost = new Post(body)
     newPost.save((err, curPost) => {
       if (err) {
@@ -23,10 +24,12 @@ router.post('/create', _md.signinRequired, (req, res, next) => {
       // 2、创建第一个日志
       let logForm = {
         postId: curPost._id,
+        productId: curPost.productId,
         from: userId,
         to: curPost.to,
         action: 1,
-        content: ''
+        content: '',
+        isRead: false
       }
       let newLog = new Log(logForm)
       newLog.save((err, curLog) => {
@@ -34,7 +37,7 @@ router.post('/create', _md.signinRequired, (req, res, next) => {
           _md.return2(err, res)
           return
         }
-        _md.return0({curLog}, res)
+        _md.return0({curLog, curPost}, res)
       })
     })
   })
@@ -59,21 +62,6 @@ router.post('/my', _md.signinRequired, (req, res, next) => {
   })
 })
 
-// 获取全部的任务
-router.post('/my', _md.signinRequired, (req, res, next) => {
-  let access_token = req.body.access_token
-  let body = req.body.data
-  let productId = body.productId
-  Post.find({productId: productId, level: body.level}).sort({ createdAt: -1 }).exec((err, allData) => {
-    if (err) {
-      _md.return2(err, res)
-      return
-    }
-    _md.return0({
-      allData
-    }, res)
-  })
-})
 // 获取指派给我的任务Matrix
 router.post('/myMatrix', _md.signinRequired, (req, res, next) => {
   let access_token = req.body.access_token
@@ -92,6 +80,28 @@ router.post('/myMatrix', _md.signinRequired, (req, res, next) => {
         allData
       }, res)
     })
+  })
+})
+
+// 获取全部的任务
+router.post('/allbylevel', _md.signinRequired, (req, res, next) => {
+  let access_token = req.body.access_token
+  let body = req.body.data
+  let productId = body.productId
+  let searchbody = {
+    productId
+  }
+  if (body.level > 0) {
+    searchbody.level = body.level
+  }
+  Post.find(searchbody).sort({ createdAt: -1 }).exec((err, allData) => {
+    if (err) {
+      _md.return2(err, res)
+      return
+    }
+    _md.return0({
+      allData
+    }, res)
   })
 })
 module.exports = router;
