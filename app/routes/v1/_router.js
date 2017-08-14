@@ -13,4 +13,7 @@ module.exports = function(app) {
 
   const log = require('./log')
   app.use('/v1/log', log)
+
+  const upload = require('./upload')
+  app.use('/v1/upload', upload)
 }

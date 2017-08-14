@@ -57,26 +57,40 @@ router.post('/create', _md.signinRequired, (req, res, next) => {
   let access_token = req.body.access_token
   let body = req.body.data
   // 1、创建product
-  let newProduct = new Product(body)
-  newProduct.save((err, curProduct) => {
-    if (err) {
-      _md.return2(err, res)
-      return
-    }
-    // 2、获取userId  productId
-    _md.decodeToken(access_token, (data) => {
-      let userId = data.data._id
-      let productId = curProduct._id
-      // 3、创建p2u
-      let newP2u = new P2u({userId, productId})
-      newP2u.save((err, curP2u) => {
+  _md.decodeToken(access_token, (data) => {
+    let userId = data.data._id
+    // 限制一位用户只能创建一个产品
+    Product.count({createrId: userId}).exec((err, count) => {
+      if (err) {
+        _md.return2(err, res)
+        return
+      }
+      console.log(count)
+      if (count > 0) {
+        _md.return1('普通用户只能创建一个产品', {}, res)
+        return
+      }
+      let newProduct = new Product(body)
+      newProduct.createrId = userId
+      newProduct.save((err, curProduct) => {
         if (err) {
           _md.return2(err, res)
           return
         }
-        _md.return0({}, res)
+        // 2、获取userId  productId
+        let productId = curProduct._id
+        // 3、创建p2u
+        let newP2u = new P2u({userId, productId})
+        newP2u.save((err, curP2u) => {
+          if (err) {
+            _md.return2(err, res)
+            return
+          }
+          _md.return0({}, res)
+        })
       })
     })
+
   })
 })
 
@@ -95,7 +109,7 @@ router.post('/addUser', _md.signinRequired, (req, res, next) => {
       return
     }
     // 2、查找用户是否存在 userId
-    User.findOne({email: body.email}).exec((err, curUser) => {
+    User.findOne({mobile: body.mobile}).exec((err, curUser) => {
       if (err) {
         _md.return2(err, res)
         return
@@ -148,7 +162,8 @@ router.post('/delUser', _md.signinRequired, (req, res, next) => {
   let access_token = req.body.access_token
   let body = req.body.data
   let userId = body.userId
-  P2u.remove({userId}).exec((err, result) => {
+  let productId = body.productId
+  P2u.remove({userId, productId}).exec((err, result) => {
     if (err) {
       _md.return2(err, res)
       return

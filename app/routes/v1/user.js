@@ -6,13 +6,10 @@ let Log = require('../../models/logModel')
 let Post = require('../../models/postModel')
 let Config = require('./_config.js')
 let _md = require('./_md.js')
-
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
-
-// 注册
+// ----短信
+let SMS = require('./wilddog_lib')
+let sms = new SMS({appId: Config.wilddog_appId, smsKey: Config.wilddog_msg_key})
+// 邮箱注册
 router.post('/signup', (req, res, next) => {
   let body = req.body
   if (!_md.required(body) || !_md.isEmail(body.email)) {
@@ -54,7 +51,7 @@ router.post('/signup', (req, res, next) => {
   })
 })
 
-// 登录
+// 邮箱登录
 router.post('/signin', (req, res, next) => {
   let body = req.body
   if (!_md.required(body) || !_md.isEmail(body.email)) {
@@ -94,6 +91,72 @@ router.post('/signin', (req, res, next) => {
   })
 })
 
+// 短信注册
+// 1、发送短信
+router.post('/signup-send-sms', (req, res, next) => {
+  let body = req.body.data
+  console.log(body)
+  sms.sendCode(body.mobile, '100000', null, function (err, data) {
+    if (err) {
+      _md.return2(err, res)
+      return
+    }
+    if (data.status == 'ok') {
+      _md.return0(data, res)
+    } else {
+      _md.return1('发送失败', data, res)
+    }
+  })
+})
+router.post('/signup-sms', (req, res, next) => {
+  let body = req.body.data
+  console.log(body)
+  sms.checkCode(body.mobile, body.code, function (err, data) {
+    if (err) {
+      _md.return2(err, res)
+      return
+    }
+    if (data.status == 'ok') {
+      // 验证码正确
+      // 1、查看是否注册
+      User.findOne({mobile: body.mobile}, (err, userData) => {
+        if (err) {
+          _md.return2(err, res)
+          return
+        }
+        if (userData) {
+          // 用户已经存在，直接登录
+          let access_token = _md.getToken(userData)
+          let data = {
+            access_token: access_token,
+            userInfo: userData
+          }
+          _md.return0(data, res)
+        } else {
+          // 用户不存在，注册
+          let new_user_body = {
+            mobile: body.mobile
+          }
+          let newUser = new User(new_user_body)
+          newUser.save((err, curUser) => {
+            if (err) {
+              _md.return2(err, res)
+            } else {
+              let access_token = _md.getToken(curUser)
+              let data = {
+                access_token: access_token,
+                userInfo: curUser
+              }
+              _md.return0(data, res)
+            }
+          })
+        }
+      })
+    } else {
+      _md.return1('验证码错误', {}, res)
+    }
+  })
+})
 // 账户设置
 router.post('/setting', (req, res, next) => {
   // 1.通过access_token 拿到userId

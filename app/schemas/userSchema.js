@@ -5,9 +5,10 @@ let UserSchema = new mongoose.Schema({
   password: String,
   name: String,
   position: String,
+  mobile: Number,
   avatar: {
     type: 'String',
-    default: 'https://ws2.sinaimg.cn/large/006tKfTcgy1fi4khmu1erj305k05k3yl.jpg'
+    default: 'avatar/598d60ddbd61ba810490ded0/d2551f28-c2de-4ab1-8007-3d6412766f31'
   },
   level: {
     type: Number,

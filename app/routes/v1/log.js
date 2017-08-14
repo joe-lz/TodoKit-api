@@ -12,8 +12,8 @@ router.post('/create', _md.signinRequired, (req, res, next) => {
   let body = req.body.data
   if (body.action == 1) {
     // body.action === 1 指派
-    // 1、将post.to 改为body.to
-    Post.update({_id: body.postId}, {$set: {to: body.to}}).exec((err, result) => {
+    // 1、将post.to 改为body.to,      将post.level 改为 1
+    Post.update({_id: body.postId}, {$set: {to: body.to, level: 1}}).exec((err, result) => {
       if (err) {
         _md.return2(err, res)
         return
@@ -32,10 +32,9 @@ router.post('/create', _md.signinRequired, (req, res, next) => {
         })
       })
     })
-    // 2、创建日志
   } else if (body.action == 2) {
     // body.action === 2 完成
-    // 1、将post.to 改为body.to
+    // 1、将post.to 改为body.to   将post.level 改为 2
     Post.update({_id: body.postId}, {$set: {to: body.to, level: 2}}).exec((err, result) => {
       if (err) {
         _md.return2(err, res)
@@ -71,6 +70,29 @@ router.post('/create', _md.signinRequired, (req, res, next) => {
           return
         }
         _md.return0({curLog}, res)
+      })
+    })
+  } else if (body.action == 5) {
+    // body.action === 5 归档
+    // 1、将post.level 改为 5
+    Post.update({_id: body.postId}, {$set: {level: 5}}).exec((err, result) => {
+      if (err) {
+        _md.return2(err, res)
+        return
+      }
+      _md.decodeToken(access_token, (data) => {
+        let userId = data.data._id
+        // 2、创建curLog
+        body.from = userId
+        body.to = userId
+        let newLog = new Log(body)
+        newLog.save((err, curLog) => {
+          if (err) {
+            _md.return2(err, res)
+            return
+          }
+          _md.return0({curLog}, res)
+        })
       })
     })
   }

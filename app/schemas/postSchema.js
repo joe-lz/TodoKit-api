@@ -30,7 +30,8 @@ let PostSchema = new mongoose.Schema({
   level: {
     type: Number,
     default: 1
-  }
+  },
+  noteImg: String
 }, {
   timestamps: true
 });
