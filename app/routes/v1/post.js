@@ -50,7 +50,7 @@ router.post('/my', _md.signinRequired, (req, res, next) => {
   let productId = body.productId
   _md.decodeToken(access_token, (data) => {
     let userId = data.data._id
-    Post.find({to: userId, productId}).sort({ createdAt: -1 }).exec((err, allData) => {
+    Post.find({to: userId, productId}).sort({ updatedAt: -1 }).exec((err, allData) => {
       if (err) {
         _md.return2(err, res)
         return
@@ -71,7 +71,7 @@ router.post('/myMatrix', _md.signinRequired, (req, res, next) => {
   let isUrgent = body.isUrgent
   _md.decodeToken(access_token, (data) => {
     let userId = data.data._id
-    Post.find({to: userId, productId, isImportant, isUrgent}).sort({ createdAt: -1 }).exec((err, allData) => {
+    Post.find({to: userId, productId, isImportant, isUrgent}).sort({ updatedAt: -1 }).exec((err, allData) => {
       if (err) {
         _md.return2(err, res)
         return
@@ -94,7 +94,7 @@ router.post('/allbylevel', _md.signinRequired, (req, res, next) => {
   if (body.level > 0) {
     searchbody.level = body.level
   }
-  Post.find(searchbody).sort({ createdAt: -1 }).exec((err, allData) => {
+  Post.find(searchbody).sort({ updatedAt: -1 }).exec((err, allData) => {
     if (err) {
       _md.return2(err, res)
       return

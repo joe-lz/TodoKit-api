@@ -11,8 +11,7 @@ let mac = new qiniu.auth.digest.Mac(Config.qiniu.AccessKey, Config.qiniu.SecretK
 router.post('/qiniutoken', _md.signinRequired, (req, res, next) => {
   let body = req.body
   let options = {
-    scope: Config.qiniu.bucket,
-    returnBody: '{"key":"$(key)","hash":"$(etag)","fsize":$(fsize),"bucket":"$(bucket)","name":"$(x:name)"}'
+    scope: Config.qiniu.bucket
   }
   let putPolicy = new qiniu.rs.PutPolicy(options)
   let uploadToken = putPolicy.uploadToken(mac)

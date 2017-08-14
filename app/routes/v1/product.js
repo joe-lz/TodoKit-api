@@ -108,36 +108,47 @@ router.post('/addUser', _md.signinRequired, (req, res, next) => {
       _md.return1('产品不存在', {}, res)
       return
     }
-    // 2、查找用户是否存在 userId
-    User.findOne({mobile: body.mobile}).exec((err, curUser) => {
+    // 查看产品能添加的人数是否达到上线
+    P2u.count({productId: body.productId}).exec((err, memberCount) => {
       if (err) {
         _md.return2(err, res)
         return
       }
-      if (!curUser) {
-        _md.return1('用户不存在', {}, res)
+      if (!(memberCount < curProduct.memberNo)) {
+        _md.return1(`成员数已经超过容纳${curProduct.memberNo}人上限`, {}, res)
         return
       }
-      // 3、查找是否已经存在
-      let userId = curUser._id
-      let productId = curProduct._id
-      P2u.findOne({userId, productId}).exec((err, curP2u) => {
+      // 2、查找用户是否存在 userId
+      User.findOne({mobile: body.mobile}).exec((err, curUser) => {
         if (err) {
           _md.return2(err, res)
           return
         }
-        if (curP2u) {
-          _md.return1('用户已经存在，不要重复添加', {}, res)
+        if (!curUser) {
+          _md.return1('用户不存在', {}, res)
           return
         }
-        // 4、创建p2u
-        let newP2u = new P2u({userId, productId})
-        newP2u.save((err, curP2u) => {
+        // 3、查找是否已经存在
+        let userId = curUser._id
+        let productId = curProduct._id
+        P2u.findOne({userId, productId}).exec((err, curP2u) => {
           if (err) {
             _md.return2(err, res)
             return
           }
-          _md.return0({}, res)
+          if (curP2u) {
+            _md.return1('用户已经存在，不要重复添加', {}, res)
+            return
+          }
+          // 4、创建p2u
+          let newP2u = new P2u({userId, productId})
+          newP2u.save((err, curP2u) => {
+            if (err) {
+              _md.return2(err, res)
+              return
+            }
+            _md.return0({}, res)
+          })
         })
       })
     })

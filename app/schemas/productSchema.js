@@ -9,6 +9,10 @@ let ProductSchema = new mongoose.Schema({
   createrId: {
     type:  mongoose.Schema.Types.ObjectId,
     ref: 'User'
+  },
+  memberNo: {
+    type: Number,
+    default: 10
   }
 }, {
   timestamps: true
