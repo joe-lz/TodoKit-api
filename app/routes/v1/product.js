@@ -66,8 +66,8 @@ router.post('/create', _md.signinRequired, (req, res, next) => {
         return
       }
       console.log(count)
-      if (count > 0) {
-        _md.return1('普通用户只能创建一个产品', {}, res)
+      if (count > Config.productNo -1) {
+        _md.return1(`当前用户只能创建【${Config.productNo}】个产品`, {}, res)
         return
       }
       let newProduct = new Product(body)
