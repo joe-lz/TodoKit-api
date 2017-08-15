@@ -28,6 +28,7 @@ router.post('/create', _md.signinRequired, (req, res, next) => {
             _md.return2(err, res)
             return
           }
+          res.io.emit('NewLog', curLog)
           _md.return0({curLog}, res)
         })
       })
@@ -69,6 +70,10 @@ router.post('/create', _md.signinRequired, (req, res, next) => {
           _md.return2(err, res)
           return
         }
+        res.io.emit('NewLog', {
+          to: body.to,
+          content: curLog.content
+        })
         _md.return0({curLog}, res)
       })
     })
