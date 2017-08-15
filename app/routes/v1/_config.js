@@ -9,6 +9,6 @@ module.exports = {
   qiniu: {
     AccessKey: '0F4sBAACVUzNlRlHL9iinjTCJm0QCxF9SN-QUjpi',
     SecretKey: 'Y9M98C8Vw6KOSjBXdoyp4UIm33XCaLfITHED_j8o',
-    bucket: 'yirenpm'
+    bucket: 'pmanager'
   }
 }
