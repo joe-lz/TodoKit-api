@@ -21,6 +21,10 @@ router.post('/create', _md.signinRequired, (req, res, next) => {
         _md.return2(err, res)
         return
       }
+      // res.io.emit('NewPost', {
+      //   to: body.to,
+      //   content: curPost.title
+      // })
       res.io.emit('NewPost', {
         to: body.to,
         content: curPost.title
