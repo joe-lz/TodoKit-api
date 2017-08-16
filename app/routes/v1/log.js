@@ -20,7 +20,7 @@ router.post('/create', _md.signinRequired, (req, res, next) => {
       }
       res.io.emit('NewPost', {
         to: body.to,
-        content: '转派'
+        content: '一个新转派任务等待你完成'
       })
       _md.decodeToken(access_token, (data) => {
         let userId = data.data._id
@@ -44,6 +44,10 @@ router.post('/create', _md.signinRequired, (req, res, next) => {
         _md.return2(err, res)
         return
       }
+      res.io.emit('NewPost', {
+        to: body.to,
+        content: '一个新任务等待你审核'
+      })
       _md.decodeToken(access_token, (data) => {
         let userId = data.data._id
         // 2、创建curLog
