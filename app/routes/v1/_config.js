@@ -1,4 +1,8 @@
 module.exports = {
+  port: 4100,
+  // port: 4101,
+  mongourl: 'mongodb://jeodiong:1qaz2wsx@localhost/pm-t',
+  // mongourl: 'mongodb://jeodiong:1qaz2wsx@localhost/pm',
   jwt: {
     secret: 'qaf',
     expires: '720h'
@@ -9,7 +13,8 @@ module.exports = {
   qiniu: {
     AccessKey: '0F4sBAACVUzNlRlHL9iinjTCJm0QCxF9SN-QUjpi',
     SecretKey: 'Y9M98C8Vw6KOSjBXdoyp4UIm33XCaLfITHED_j8o',
-    bucket: 'pmanager'
+    // bucket: 'pmanager',
+    bucket: 'pmanagert'
   },
   productNo: 1
 }
