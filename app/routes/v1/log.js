@@ -18,6 +18,10 @@ router.post('/create', _md.signinRequired, (req, res, next) => {
         _md.return2(err, res)
         return
       }
+      res.io.emit('NewPost', {
+        to: body.to,
+        content: '转派'
+      })
       _md.decodeToken(access_token, (data) => {
         let userId = data.data._id
         // 2、创建curLog
@@ -28,7 +32,6 @@ router.post('/create', _md.signinRequired, (req, res, next) => {
             _md.return2(err, res)
             return
           }
-          res.io.emit('NewLog', curLog)
           _md.return0({curLog}, res)
         })
       })

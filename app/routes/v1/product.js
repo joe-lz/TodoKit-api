@@ -147,6 +147,10 @@ router.post('/addUser', _md.signinRequired, (req, res, next) => {
               _md.return2(err, res)
               return
             }
+            res.io.emit('NewProduct', {
+              to: userId,
+              content: `你刚刚被加入新产品【${curProduct.name}】`
+            })
             _md.return0({}, res)
           })
         })
