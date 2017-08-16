@@ -8,7 +8,7 @@ let UserSchema = new mongoose.Schema({
   mobile: Number,
   avatar: {
     type: 'String',
-    default: 'avatar.png'
+    default: 'default/avatar.png'
   },
   level: {
     type: Number,
