@@ -21,10 +21,6 @@ router.post('/create', _md.signinRequired, (req, res, next) => {
         _md.return2(err, res)
         return
       }
-      // res.io.emit('NewPost', {
-      //   to: body.to,
-      //   content: curPost.title
-      // })
       res.io.emit('NewPost', {
         to: body.to,
         content: curPost.title
@@ -58,13 +54,18 @@ router.post('/my', _md.signinRequired, (req, res, next) => {
   let productId = body.productId
   _md.decodeToken(access_token, (data) => {
     let userId = data.data._id
-    Post.find({to: userId, productId}).sort({ updatedAt: -1 }).exec((err, allData) => {
+    Post.find({to: userId, productId}).sort({ updatedAt: -1 }).skip((body.nextPageNo - 1)*body.pageSize).limit(body.pageSize).exec((err, allData) => {
       if (err) {
         _md.return2(err, res)
         return
       }
+      let nextPageNo = body.nextPageNo + 1
+      if (allData.length < body.pageSize) {
+        nextPageNo = 0
+      }
       _md.return0({
-        allData
+        allData,
+        nextPageNo
       }, res)
     })
   })
@@ -79,13 +80,18 @@ router.post('/myMatrix', _md.signinRequired, (req, res, next) => {
   let isUrgent = body.isUrgent
   _md.decodeToken(access_token, (data) => {
     let userId = data.data._id
-    Post.find({to: userId, productId, isImportant, isUrgent}).sort({ updatedAt: -1 }).exec((err, allData) => {
+    Post.find({to: userId, productId, isImportant, isUrgent}).sort({ updatedAt: -1 }).skip((body.nextPageNo - 1)*body.pageSize).limit(body.pageSize).exec((err, allData) => {
       if (err) {
         _md.return2(err, res)
         return
       }
+      let nextPageNo = body.nextPageNo + 1
+      if (allData.length < body.pageSize) {
+        nextPageNo = 0
+      }
       _md.return0({
-        allData
+        allData,
+        nextPageNo
       }, res)
     })
   })
@@ -102,7 +108,7 @@ router.post('/allbylevel', _md.signinRequired, (req, res, next) => {
   if (body.level > 0) {
     searchbody.level = body.level
   }
-  Post.find(searchbody).sort({ updatedAt: -1 }).exec((err, allData) => {
+  Post.find(searchbody).sort({ updatedAt: -1 }).populate('to').exec((err, allData) => {
     if (err) {
       _md.return2(err, res)
       return
