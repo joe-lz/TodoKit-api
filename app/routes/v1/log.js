@@ -115,7 +115,7 @@ router.post('/all', _md.signinRequired, (req, res, next) => {
   let access_token = req.body.access_token
   let body = req.body.data
   // 1 查找出该post的所有日志
-  Log.find({postId: body.postId}).sort({ createdAt: -1 }).populate('from').populate('to').exec((err, allData) => {
+  Log.find({postId: body.postId}).sort({ createdAt: -1 }).limit(50).populate('from').populate('to').exec((err, allData) => {
     if (err) {
       _md.return2(err, res)
       return
@@ -142,13 +142,18 @@ router.post('/my', _md.signinRequired, (req, res, next) => {
   _md.decodeToken(access_token, (data) => {
     let userId = data.data._id
     // 2、创建curLog
-    Log.find({productId: body.productId, to: userId, isRead: body.isRead}).sort({ createdAt: -1 }).populate('from').populate('to').populate('postId').exec((err, allData) => {
+    Log.find({productId: body.productId, to: userId, isRead: body.isRead}).sort({ createdAt: -1 }).skip((body.nextPageNo - 1)*body.pageSize).limit(body.pageSize).populate('from').populate('to').populate('postId').exec((err, allData) => {
       if (err) {
         _md.return2(err, res)
         return
       }
+      let nextPageNo = body.nextPageNo + 1
+      if (allData.length < body.pageSize) {
+        nextPageNo = 0
+      }
       _md.return0({
-        allData
+        allData,
+        nextPageNo
       }, res)
     })
   })
