@@ -54,7 +54,15 @@ router.post('/my', _md.signinRequired, (req, res, next) => {
   let productId = body.productId
   _md.decodeToken(access_token, (data) => {
     let userId = data.data._id
-    Post.find({to: userId, productId}).sort({ updatedAt: -1 }).skip((body.nextPageNo - 1)*body.pageSize).limit(body.pageSize).exec((err, allData) => {
+    let searchObj = {
+      to: userId,
+      productId,
+      level: {$lt: 5}
+    }
+    if (body.type > 0) {
+      searchObj.type = body.type
+    }
+    Post.find(searchObj).sort({ updatedAt: -1 }).skip((body.nextPageNo - 1)*body.pageSize).limit(body.pageSize).exec((err, allData) => {
       if (err) {
         _md.return2(err, res)
         return
@@ -75,12 +83,18 @@ router.post('/my', _md.signinRequired, (req, res, next) => {
 router.post('/myMatrix', _md.signinRequired, (req, res, next) => {
   let access_token = req.body.access_token
   let body = req.body.data
-  let productId = body.productId
-  let isImportant = body.isImportant
-  let isUrgent = body.isUrgent
   _md.decodeToken(access_token, (data) => {
     let userId = data.data._id
-    Post.find({to: userId, productId, isImportant, isUrgent}).sort({ updatedAt: -1 }).skip((body.nextPageNo - 1)*body.pageSize).limit(body.pageSize).exec((err, allData) => {
+    let searchObj = {
+      to: userId,
+      productId: body.productId,
+      isImportant: body.isImportant,
+      isUrgent:  body.isUrgent
+    }
+    if (body.type > 0) {
+      searchObj.type = body.type
+    }
+    Post.find(searchObj).sort({ updatedAt: -1 }).skip((body.nextPageNo - 1)*body.pageSize).limit(body.pageSize).exec((err, allData) => {
       if (err) {
         _md.return2(err, res)
         return
@@ -102,19 +116,27 @@ router.post('/allbylevel', _md.signinRequired, (req, res, next) => {
   let access_token = req.body.access_token
   let body = req.body.data
   let productId = body.productId
-  let searchbody = {
+  let searchObj = {
     productId
   }
   if (body.level > 0) {
-    searchbody.level = body.level
+    searchObj.level = body.level
   }
-  Post.find(searchbody).sort({ updatedAt: -1 }).populate('to').exec((err, allData) => {
+  if (body.type > 0) {
+    searchObj.type = body.type
+  }
+  Post.find(searchObj).sort({ updatedAt: -1 }).skip((body.nextPageNo - 1)*body.pageSize).limit(body.pageSize).populate('to').exec((err, allData) => {
     if (err) {
       _md.return2(err, res)
       return
     }
+    let nextPageNo = body.nextPageNo + 1
+    if (allData.length < body.pageSize) {
+      nextPageNo = 0
+    }
     _md.return0({
-      allData
+      allData,
+      nextPageNo
     }, res)
   })
 })
