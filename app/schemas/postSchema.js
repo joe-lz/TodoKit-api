@@ -23,6 +23,10 @@ let PostSchema = new mongoose.Schema({
     type:  mongoose.Schema.Types.ObjectId,
     ref: 'User'
   },
+  finisherId: {
+    type:  mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  },
   to: {
     type:  mongoose.Schema.Types.ObjectId,
     ref: 'User'

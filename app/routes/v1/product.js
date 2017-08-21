@@ -164,7 +164,7 @@ router.post('/allUser', _md.signinRequired, (req, res, next) => {
   let access_token = req.body.access_token
   let body = req.body.data
   let productId = body.productId
-  P2u.find({productId}).populate('userId').exec((err, allData) => {
+  P2u.find({productId}).populate('userId').populate('productId').exec((err, allData) => {
     if (err) {
       _md.return2(err, res)
       return

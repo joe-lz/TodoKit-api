@@ -38,18 +38,18 @@ router.post('/create', _md.signinRequired, (req, res, next) => {
     })
   } else if (body.action == 2) {
     // body.action === 2 完成
-    // 1、将post.to 改为body.to   将post.level 改为 2
-    Post.update({_id: body.postId}, {$set: {to: body.to, level: 2}}).exec((err, result) => {
-      if (err) {
-        _md.return2(err, res)
-        return
-      }
-      res.io.emit('NewPost', {
-        to: body.to,
-        content: '一个新任务等待你审核'
-      })
-      _md.decodeToken(access_token, (data) => {
-        let userId = data.data._id
+    // 1、将post.to 改为body.to   将post.level 改为 2, finisherId: userId
+    _md.decodeToken(access_token, (data) => {
+      let userId = data.data._id
+      Post.update({_id: body.postId}, {$set: {to: body.to, level: 2, finisherId: userId}}).exec((err, result) => {
+        if (err) {
+          _md.return2(err, res)
+          return
+        }
+        res.io.emit('NewPost', {
+          to: body.to,
+          content: '一个新任务等待你审核'
+        })
         // 2、创建curLog
         body.from = userId
         let newLog = new Log(body)
