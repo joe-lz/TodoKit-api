@@ -53,7 +53,8 @@ let return1 = (msg, data, res) => {
 let return2 = (data, res) => {
   res.json({
     code: 2,
-    msg: '数据库访异常',
+    // msg: '数据库访异常',
+    msg: '数据不存在',
     data: data
   })
 }
