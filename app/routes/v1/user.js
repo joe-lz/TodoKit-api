@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 let User = require('../../models/userModel')
+let Product = require('../../models/productModel')
 let Log = require('../../models/logModel')
 let Post = require('../../models/postModel')
 let Config = require('./_config.js')
@@ -196,9 +197,16 @@ router.post('/getProductStateInfo', _md.signinRequired, (req, res, next) => {
         _md.return2(err, res)
         return
       }
-      _md.return0({
-        notification_count
-      }, res)
+      Product.findOne({_id: body.productId}).exec((err, curProduct) => {
+        if (err) {
+          _md.return2(err, res)
+          return
+        }
+        _md.return0({
+          notification_count,
+          curProduct
+        }, res)
+      })
     })
   })
 })
