@@ -35,7 +35,9 @@ let PostSchema = new mongoose.Schema({
     type: Number,
     default: 1
   },
-  noteImg: String
+  noteImg: String,
+  version: String,
+  tag: String
 }, {
   timestamps: true
 });

@@ -52,6 +52,78 @@ router.post('/setting', _md.signinRequired, (req, res, next) => {
     }, res)
   })
 })
+// 添加versions
+router.post('/addVersions', _md.signinRequired, (req, res, next) => {
+  let access_token = req.body.access_token
+  let body = req.body.data
+  if (!body.version) {
+    _md.return1('参数不正确', {}, res)
+    return
+  }
+  Product.update({_id: body._id}, {'$addToSet': {'versions': body.version}}).exec((err, result) => {
+    if (err) {
+      _md.return2(err, res)
+      return
+    }
+    _md.return0({
+      result
+    }, res)
+  })
+})
+// 删除versions
+router.post('/delVersions', _md.signinRequired, (req, res, next) => {
+  let access_token = req.body.access_token
+  let body = req.body.data
+  if (!body.version) {
+    _md.return1('参数不正确', {}, res)
+    return
+  }
+  Product.update({_id: body._id}, {'$pull': {'versions': body.version}}).exec((err, result) => {
+    if (err) {
+      _md.return2(err, res)
+      return
+    }
+    _md.return0({
+      result
+    }, res)
+  })
+})
+// 添加tags
+router.post('/addTags', _md.signinRequired, (req, res, next) => {
+  let access_token = req.body.access_token
+  let body = req.body.data
+  if (!body.tag) {
+    _md.return1('参数不正确', {}, res)
+    return
+  }
+  Product.update({_id: body._id}, {'$addToSet': {'tags': body.tag}}).exec((err, result) => {
+    if (err) {
+      _md.return2(err, res)
+      return
+    }
+    _md.return0({
+      result
+    }, res)
+  })
+})
+// 删除tags
+router.post('/delTags', _md.signinRequired, (req, res, next) => {
+  let access_token = req.body.access_token
+  let body = req.body.data
+  if (!body.tag) {
+    _md.return1('参数不正确', {}, res)
+    return
+  }
+  Product.update({_id: body._id}, {'$pull': {'tags': body.tag}}).exec((err, result) => {
+    if (err) {
+      _md.return2(err, res)
+      return
+    }
+    _md.return0({
+      result
+    }, res)
+  })
+})
 // 创建商品
 router.post('/create', _md.signinRequired, (req, res, next) => {
   let access_token = req.body.access_token

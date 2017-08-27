@@ -13,6 +13,14 @@ let ProductSchema = new mongoose.Schema({
   memberNo: {
     type: Number,
     default: 10
+  },
+  tags: {
+    type: Array,
+    default: ['网页', 'IOS', 'Android', '服务端']
+  },
+  versions: {
+    type: Array,
+    default: ['1.0']
   }
 }, {
   timestamps: true
