@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
+let _ = require('lodash')
 let Post = require('../../models/postModel')
 let Log = require('../../models/logModel')
 let Config = require('./_config.js')
@@ -62,7 +63,7 @@ router.post('/my', _md.signinRequired, (req, res, next) => {
     if (body.type > 0) {
       searchObj.type = body.type
     }
-    Post.find(searchObj).sort({ updatedAt: -1 }).skip((body.nextPageNo - 1)*body.pageSize).limit(body.pageSize).exec((err, allData) => {
+    Post.find(searchObj).sort({ updatedAt: -1 }).skip((body.nextPageNo - 1)*body.pageSize).limit(body.pageSize).populate('to').exec((err, allData) => {
       if (err) {
         _md.return2(err, res)
         return
@@ -126,6 +127,28 @@ router.post('/allbylevel', _md.signinRequired, (req, res, next) => {
     searchObj.type = body.type
   }
   Post.find(searchObj).sort({ updatedAt: -1 }).skip((body.nextPageNo - 1)*body.pageSize).limit(body.pageSize).populate('to').exec((err, allData) => {
+    if (err) {
+      _md.return2(err, res)
+      return
+    }
+    let nextPageNo = body.nextPageNo + 1
+    if (allData.length < body.pageSize) {
+      nextPageNo = 0
+    }
+    _md.return0({
+      allData,
+      nextPageNo
+    }, res)
+  })
+})
+// 获取全部的任务
+router.post('/allbyfilter', _md.signinRequired, (req, res, next) => {
+  let access_token = req.body.access_token
+  let body = req.body.data
+  let searchObj = _.pickBy(body.formData, _.identity)
+  // searchObj = _.omit(searchObj, ['nextPageNo', 'pageSize'])
+  console.log(searchObj)
+  Post.find(searchObj).skip((body.nextPageNo - 1)*body.pageSize).limit(body.pageSize).populate('to').exec((err, allData) => {
     if (err) {
       _md.return2(err, res)
       return

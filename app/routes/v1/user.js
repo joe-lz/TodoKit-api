@@ -204,7 +204,24 @@ router.post('/getProductStateInfo', _md.signinRequired, (req, res, next) => {
         }
         _md.return0({
           notification_count,
-          curProduct
+          curProduct,
+          typeArr: [{
+            id: 1,
+            name: 'Bug'
+          }, {
+            id: 2,
+            name: '需求'
+          }],
+          levelArr: [{
+            id: 1,
+            name: '待办'
+          }, {
+            id: 2,
+            name: '待审核'
+          }, {
+            id: 5,
+            name: '归档'
+          }]
         }, res)
       })
     })
