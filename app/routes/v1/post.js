@@ -255,6 +255,7 @@ router.post('/statisticsVersion', _md.signinRequired, (req, res, next) => {
           return obj
         })
         Post.aggregate([{$match: {productId: mongoose.Types.ObjectId(body.productId), level: 5}}, {$group: {_id: '$version',count: {$sum: 1}}}, {$project: {no_5: '$count'}}]).exec((err, no_5) => {
+          console.log(no_5)
           versionArray = _.chain(versionArray).map((obj) => {
             no_5.map((curobj) => {
               // obj = _.assign(obj, curobj)
@@ -265,7 +266,6 @@ router.post('/statisticsVersion', _md.signinRequired, (req, res, next) => {
               }
             })
             if (!no_5 || no_5.length == 0) {obj.no_5 = 0}
-            console.log(obj)
             return obj
           })
           _md.return0({
