@@ -90,7 +90,8 @@ router.post('/myMatrix', _md.signinRequired, (req, res, next) => {
       to: userId,
       productId: body.productId,
       isImportant: body.isImportant,
-      isUrgent:  body.isUrgent
+      isUrgent:  body.isUrgent,
+      level: {$lt: 5}
     }
     if (body.type > 0) {
       searchObj.type = body.type
