@@ -127,7 +127,7 @@ router.post('/allbylevel', _md.signinRequired, (req, res, next) => {
   if (body.type > 0) {
     searchObj.type = body.type
   }
-  Post.find(searchObj).sort({ updatedAt: -1 }).skip((body.nextPageNo - 1)*body.pageSize).limit(body.pageSize).populate('to').exec((err, allData) => {
+  Post.find(searchObj).sort({ updatedAt: -1 }).skip((body.nextPageNo - 1)*body.pageSize).limit(body.pageSize).populate('to').populate('finisherId').exec((err, allData) => {
     if (err) {
       _md.return2(err, res)
       return
