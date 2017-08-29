@@ -149,7 +149,7 @@ router.post('/allbyfilter', _md.signinRequired, (req, res, next) => {
   let searchObj = _.pickBy(body.formData, _.identity)
   // searchObj = _.omit(searchObj, ['nextPageNo', 'pageSize'])
   console.log(searchObj)
-  Post.find(searchObj).sort({ updatedAt: -1 }).skip((body.nextPageNo - 1)*body.pageSize).limit(body.pageSize).populate('to').exec((err, allData) => {
+  Post.find(searchObj).sort({ updatedAt: -1 }).skip((body.nextPageNo - 1)*body.pageSize).limit(body.pageSize).populate('to').populate('finisherId').exec((err, allData) => {
     if (err) {
       _md.return2(err, res)
       return
