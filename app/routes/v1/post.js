@@ -177,10 +177,8 @@ router.post('/statisticsTag', _md.signinRequired, (req, res, next) => {
       tagArray = _.chain(tagArray).map((obj) => {
         no_1.map((curobj) => {
           // obj = _.assign(obj, curobj)
-          if (curobj && obj && curobj._id === obj._id) {
+          if (curobj && obj && curobj._id == obj._id) {
             obj.no_1 = curobj.no_1
-          } else {
-            obj.no_1 = 0
           }
         })
         if (!no_1 || no_1.length == 0) {obj.no_1 = 0}
@@ -192,8 +190,6 @@ router.post('/statisticsTag', _md.signinRequired, (req, res, next) => {
             // obj = _.assign(obj, curobj)
             if (curobj && obj && curobj._id === obj._id) {
               obj.no_2 = curobj.no_2
-            } else {
-              obj.no_2 = 0
             }
           })
           if (!no_2 || no_2.length == 0) {obj.no_2 = 0}
@@ -205,8 +201,6 @@ router.post('/statisticsTag', _md.signinRequired, (req, res, next) => {
               // obj = _.assign(obj, curobj)
               if (curobj && obj && curobj._id === obj._id) {
                 obj.no_5 = curobj.no_5
-              } else {
-                obj.no_5 = 0
               }
             })
             if (!no_5 || no_5.length == 0) {obj.no_5 = 0}
@@ -232,8 +226,6 @@ router.post('/statisticsVersion', _md.signinRequired, (req, res, next) => {
           // obj = _.assign(obj, curobj)
           if (curobj && obj && curobj._id === obj._id) {
             obj.no_1 = curobj.no_1
-          } else {
-            obj.no_1 = 0
           }
         })
         if (!no_1 || no_1.length == 0) {obj.no_1 = 0}
@@ -245,8 +237,6 @@ router.post('/statisticsVersion', _md.signinRequired, (req, res, next) => {
             // obj = _.assign(obj, curobj)
             if (curobj && obj && curobj._id === obj._id) {
               obj.no_2 = curobj.no_2
-            } else {
-              obj.no_2 = 0
             }
           })
           if (!no_2 || no_2.length == 0) {obj.no_2 = 0}
@@ -258,8 +248,6 @@ router.post('/statisticsVersion', _md.signinRequired, (req, res, next) => {
               // obj = _.assign(obj, curobj)
               if (curobj && obj && curobj._id === obj._id) {
                 obj.no_5 = curobj.no_5
-              } else {
-                obj.no_5 = 0
               }
             })
             if (!no_5 || no_5.length == 0) {obj.no_5 = 0}
