@@ -150,7 +150,6 @@ router.post('/allbyfilter', _md.signinRequired, (req, res, next) => {
   // 删除空key
   let searchObj = _.pickBy(body.formData, _.identity)
   // searchObj = _.omit(searchObj, ['nextPageNo', 'pageSize'])
-  console.log(searchObj)
   Post.find(searchObj).sort({ updatedAt: -1 }).skip((body.nextPageNo - 1)*body.pageSize).limit(body.pageSize).populate('to').populate('finisherId').exec((err, allData) => {
     if (err) {
       _md.return2(err, res)
@@ -210,7 +209,6 @@ router.post('/statisticsTag', _md.signinRequired, (req, res, next) => {
               }
             })
             if (!no_5 || no_5.length == 0) {obj.no_5 = 0}
-            console.log(obj)
             return obj
           })
           _md.return0({
