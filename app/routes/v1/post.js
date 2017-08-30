@@ -170,10 +170,14 @@ router.post('/statisticsTag', _md.signinRequired, (req, res, next) => {
   let access_token = req.body.access_token
   let body = req.body.data
   let tagArray = {}
-  Post.aggregate([{$match: {productId: mongoose.Types.ObjectId(body.productId)}}, {$group: {_id: '$tag',count: {$sum: 1}}}, {$project: {no_all: '$count'}}]).exec((err, no_all) => {
+  let matchObj = {productId: mongoose.Types.ObjectId(body.productId)}
+  if (body && body.type) {
+    matchObj.type = body.type
+  }
+  Post.aggregate([{$match: matchObj}, {$group: {_id: '$tag',count: {$sum: 1}}}, {$project: {no_all: '$count'}}]).exec((err, no_all) => {
     tagArray = no_all
-    Post.aggregate([{$match: {productId: mongoose.Types.ObjectId(body.productId), level: 1}}, {$group: {_id: '$tag',count: {$sum: 1}}}, {$project: {no_1: '$count'}}]).exec((err, no_1) => {
-      console.log(no_1)
+    matchObj.level = 1
+    Post.aggregate([{$match: matchObj}, {$group: {_id: '$tag',count: {$sum: 1}}}, {$project: {no_1: '$count'}}]).exec((err, no_1) => {
       tagArray = _.chain(tagArray).map((obj) => {
         no_1.map((curobj) => {
           // obj = _.assign(obj, curobj)
@@ -184,7 +188,8 @@ router.post('/statisticsTag', _md.signinRequired, (req, res, next) => {
         if (!no_1 || no_1.length == 0) {obj.no_1 = 0}
         return obj
       })
-      Post.aggregate([{$match: {productId: mongoose.Types.ObjectId(body.productId), level: 2}}, {$group: {_id: '$tag',count: {$sum: 1}}}, {$project: {no_2: '$count'}}]).exec((err, no_2) => {
+      matchObj.level = 2
+      Post.aggregate([{$match: matchObj}, {$group: {_id: '$tag',count: {$sum: 1}}}, {$project: {no_2: '$count'}}]).exec((err, no_2) => {
         tagArray = _.chain(tagArray).map((obj) => {
           no_2.map((curobj) => {
             // obj = _.assign(obj, curobj)
@@ -195,7 +200,8 @@ router.post('/statisticsTag', _md.signinRequired, (req, res, next) => {
           if (!no_2 || no_2.length == 0) {obj.no_2 = 0}
           return obj
         })
-        Post.aggregate([{$match: {productId: mongoose.Types.ObjectId(body.productId), level: 5}}, {$group: {_id: '$tag',count: {$sum: 1}}}, {$project: {no_5: '$count'}}]).exec((err, no_5) => {
+        matchObj.level = 5
+        Post.aggregate([{$match: matchObj}, {$group: {_id: '$tag',count: {$sum: 1}}}, {$project: {no_5: '$count'}}]).exec((err, no_5) => {
           tagArray = _.chain(tagArray).map((obj) => {
             no_5.map((curobj) => {
               // obj = _.assign(obj, curobj)
@@ -218,9 +224,14 @@ router.post('/statisticsVersion', _md.signinRequired, (req, res, next) => {
   let access_token = req.body.access_token
   let body = req.body.data
   let versionArray = {}
-  Post.aggregate([{$match: {productId: mongoose.Types.ObjectId(body.productId)}}, {$group: {_id: '$version',count: {$sum: 1}}}, {$project: {no_all: '$count'}}]).exec((err, no_all) => {
+  let matchObj = {productId: mongoose.Types.ObjectId(body.productId)}
+  if (body && body.type) {
+    matchObj.type = body.type
+  }
+  Post.aggregate([{$match: matchObj}, {$group: {_id: '$version',count: {$sum: 1}}}, {$project: {no_all: '$count'}}]).exec((err, no_all) => {
     versionArray = no_all
-    Post.aggregate([{$match: {productId: mongoose.Types.ObjectId(body.productId), level: 1}}, {$group: {_id: '$version',count: {$sum: 1}}}, {$project: {no_1: '$count'}}]).exec((err, no_1) => {
+    matchObj.level = 1
+    Post.aggregate([{$match: matchObj}, {$group: {_id: '$version',count: {$sum: 1}}}, {$project: {no_1: '$count'}}]).exec((err, no_1) => {
       versionArray = _.chain(versionArray).map((obj) => {
         no_1.map((curobj) => {
           // obj = _.assign(obj, curobj)
@@ -231,7 +242,8 @@ router.post('/statisticsVersion', _md.signinRequired, (req, res, next) => {
         if (!no_1 || no_1.length == 0) {obj.no_1 = 0}
         return obj
       })
-      Post.aggregate([{$match: {productId: mongoose.Types.ObjectId(body.productId), level: 2}}, {$group: {_id: '$version',count: {$sum: 1}}}, {$project: {no_2: '$count'}}]).exec((err, no_2) => {
+      matchObj.level = 2
+      Post.aggregate([{$match: matchObj}, {$group: {_id: '$version',count: {$sum: 1}}}, {$project: {no_2: '$count'}}]).exec((err, no_2) => {
         versionArray = _.chain(versionArray).map((obj) => {
           no_2.map((curobj) => {
             // obj = _.assign(obj, curobj)
@@ -242,7 +254,8 @@ router.post('/statisticsVersion', _md.signinRequired, (req, res, next) => {
           if (!no_2 || no_2.length == 0) {obj.no_2 = 0}
           return obj
         })
-        Post.aggregate([{$match: {productId: mongoose.Types.ObjectId(body.productId), level: 5}}, {$group: {_id: '$version',count: {$sum: 1}}}, {$project: {no_5: '$count'}}]).exec((err, no_5) => {
+        matchObj.level = 5
+        Post.aggregate([{$match: matchObj}, {$group: {_id: '$version',count: {$sum: 1}}}, {$project: {no_5: '$count'}}]).exec((err, no_5) => {
           versionArray = _.chain(versionArray).map((obj) => {
             no_5.map((curobj) => {
               // obj = _.assign(obj, curobj)
