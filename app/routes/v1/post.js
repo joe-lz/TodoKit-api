@@ -174,10 +174,15 @@ router.post('/statisticsTag', _md.signinRequired, (req, res, next) => {
   if (body && body.type) {
     matchObj.type = body.type
   }
+  // 日期筛选
   if (body && body.dayValue) {
     matchObj.createdAt = {
       $gte: new Date(body.dayValue)
     }
+  }
+  // version
+  if (body && body.version) {
+    matchObj.version = body.version
   }
   Post.aggregate([{$match: matchObj}, {$group: {_id: '$tag',count: {$sum: 1}}}, {$project: {no_all: '$count'}}]).exec((err, no_all) => {
     tagArray = no_all
@@ -238,6 +243,10 @@ router.post('/statisticsVersion', _md.signinRequired, (req, res, next) => {
     matchObj.createdAt = {
       $gte: new Date(body.dayValue)
     }
+  }
+  // version
+  if (body && body.version) {
+    matchObj.version = body.version
   }
   Post.aggregate([{$match: matchObj}, {$group: {_id: '$version',count: {$sum: 1}}}, {$project: {no_all: '$count'}}]).exec((err, no_all) => {
     versionArray = no_all
