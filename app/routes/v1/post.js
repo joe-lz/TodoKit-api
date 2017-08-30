@@ -174,6 +174,11 @@ router.post('/statisticsTag', _md.signinRequired, (req, res, next) => {
   if (body && body.type) {
     matchObj.type = body.type
   }
+  if (body && body.dayValue) {
+    matchObj.createdAt = {
+      $gte: new Date(body.dayValue)
+    }
+  }
   Post.aggregate([{$match: matchObj}, {$group: {_id: '$tag',count: {$sum: 1}}}, {$project: {no_all: '$count'}}]).exec((err, no_all) => {
     tagArray = no_all
     matchObj.level = 1
@@ -227,6 +232,12 @@ router.post('/statisticsVersion', _md.signinRequired, (req, res, next) => {
   let matchObj = {productId: mongoose.Types.ObjectId(body.productId)}
   if (body && body.type) {
     matchObj.type = body.type
+  }
+  // 日期筛选
+  if (body && body.dayValue) {
+    matchObj.createdAt = {
+      $gte: new Date(body.dayValue)
+    }
   }
   Post.aggregate([{$match: matchObj}, {$group: {_id: '$version',count: {$sum: 1}}}, {$project: {no_all: '$count'}}]).exec((err, no_all) => {
     versionArray = no_all
