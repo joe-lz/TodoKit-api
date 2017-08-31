@@ -66,7 +66,7 @@ router.post('/my', _md.signinRequired, (req, res, next) => {
     }
     if (body.type === "my") {
       // -1 是我创建的
-      Post.find({productId, createrId: userId}).sort({ updatedAt: -1 }).skip((body.nextPageNo - 1)*body.pageSize).limit(body.pageSize).populate('to').exec((err, allData) => {
+      Post.find({productId, createrId: userId, level: {$lt: 5}}).sort({ updatedAt: -1 }).skip((body.nextPageNo - 1)*body.pageSize).limit(body.pageSize).populate('to').exec((err, allData) => {
         if (err) {
           _md.return2(err, res)
           return
