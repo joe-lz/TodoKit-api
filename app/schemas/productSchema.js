@@ -16,7 +16,7 @@ let ProductSchema = new mongoose.Schema({
   },
   tags: {
     type: Array,
-    default: ['网页', 'IOS', 'Android', '服务端']
+    default: ['网页', 'iOS', 'Android', '服务端']
   },
   versions: {
     type: Array,
