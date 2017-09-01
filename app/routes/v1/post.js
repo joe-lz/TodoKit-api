@@ -99,7 +99,38 @@ router.post('/my', _md.signinRequired, (req, res, next) => {
     }
   })
 })
-
+// 获取指派给我创建的任务
+router.post('/mycreate', _md.signinRequired, (req, res, next) => {
+  let access_token = req.body.access_token
+  let body = req.body.data
+  let productId = body.productId
+  let level = body.level
+  _md.decodeToken(access_token, (data) => {
+    let userId = data.data._id
+    let searchObj = {
+      createrId: userId,
+      productId
+    }
+    if (level > 0) {
+      searchObj.level = level
+    }
+    Post.find(searchObj).sort({ updatedAt: -1 }).skip((body.nextPageNo - 1)*body.pageSize).limit(body.pageSize).populate('to').exec((err, allData) => {
+      if (err) {
+        _md.return2(err, res)
+        return
+      }
+      let nextPageNo = body.nextPageNo + 1
+      if (allData.length < body.pageSize) {
+        nextPageNo = 0
+      }
+      _md.return0({
+        allData,
+        nextPageNo
+      }, res)
+      console.log(allData)
+    })
+  })
+})
 // 获取指派给我的任务Matrix
 router.post('/myMatrix', _md.signinRequired, (req, res, next) => {
   let access_token = req.body.access_token

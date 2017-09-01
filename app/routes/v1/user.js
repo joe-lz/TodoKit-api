@@ -184,7 +184,24 @@ router.post('/setting', (req, res, next) => {
     })
   })
 })
-
+// userInfo
+router.post('/info', (req, res, next) => {
+  // 1.通过access_token 拿到userId
+  // 2.更新userInfo
+  let access_token = req.body.access_token
+  _md.decodeToken(access_token, (data) => {
+    let userId = data.data._id
+    User.findOne({_id: userId}).exec((err, curUser) => {
+      if (err) {
+        _md.return2(err, res)
+        return
+      }
+      _md.return0({
+        curUser
+      }, res)
+    })
+  })
+})
 // getProductStateInfo
 router.post('/getProductStateInfo', _md.signinRequired, (req, res, next) => {
   let access_token = req.body.access_token

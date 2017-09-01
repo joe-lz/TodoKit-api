@@ -6,6 +6,10 @@ let UserSchema = new mongoose.Schema({
   name: String,
   position: String,
   mobile: Number,
+  role: {
+    type: String,
+    default: '开发者'
+  },
   avatar: {
     type: 'String',
     default: 'default/avatar.png'
