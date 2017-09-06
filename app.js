@@ -35,7 +35,8 @@ app.use(function(req, res, next) {
   var allowedOrigins = [
       'http://127.0.0.1:9080',
       'http://localhost:9080',
-      'http://127.0.0.1:4101'
+      'http://127.0.0.1:4101',
+      'https://www.todokit.vip'
     ];
   var origin = req.headers.origin;
   if(allowedOrigins.indexOf(origin) > -1){
