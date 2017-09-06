@@ -33,8 +33,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(function(req, res, next) {
   var allowedOrigins = [
-      'http://127.0.0.1:9080', // vlog dev
-      'http://localhost:9080', // vlog dev
+      'http://127.0.0.1:9080',
+      'http://localhost:9080',
+      'http://127.0.0.1:4101'
     ];
   var origin = req.headers.origin;
   if(allowedOrigins.indexOf(origin) > -1){
