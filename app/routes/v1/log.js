@@ -79,7 +79,8 @@ router.post('/create', _md.signinRequired, (req, res, next) => {
         }
         res.io.emit('NewLog', {
           to: body.to,
-          content: curLog.content
+          content: curLog.content,
+          curLog: curLog
         })
         _md.return0({curLog}, res)
       })
