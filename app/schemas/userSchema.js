@@ -3,7 +3,10 @@ let mongoose = require('mongoose');
 let UserSchema = new mongoose.Schema({
   email: String,
   password: String,
-  name: String,
+  name: {
+    type: String,
+    default: '无名氏'
+  },
   position: String,
   mobile: Number,
   role: {

@@ -132,67 +132,67 @@ router.post('/mycreate', _md.signinRequired, (req, res, next) => {
   })
 })
 // 获取指派给我的任务Matrix
-router.post('/myMatrix', _md.signinRequired, (req, res, next) => {
-  let access_token = req.body.access_token
-  let body = req.body.data
-  _md.decodeToken(access_token, (data) => {
-    let userId = data.data._id
-    let searchObj = {
-      to: userId,
-      productId: body.productId,
-      isImportant: body.isImportant,
-      isUrgent:  body.isUrgent,
-      level: {$lt: 5}
-    }
-    if (body.type > 0) {
-      searchObj.type = body.type
-    }
-    Post.find(searchObj).sort({ updatedAt: -1 }).skip((body.nextPageNo - 1)*body.pageSize).limit(body.pageSize).exec((err, allData) => {
-      if (err) {
-        _md.return2(err, res)
-        return
-      }
-      let nextPageNo = body.nextPageNo + 1
-      if (allData.length < body.pageSize) {
-        nextPageNo = 0
-      }
-      _md.return0({
-        allData,
-        nextPageNo
-      }, res)
-    })
-  })
-})
+// router.post('/myMatrix', _md.signinRequired, (req, res, next) => {
+//   let access_token = req.body.access_token
+//   let body = req.body.data
+//   _md.decodeToken(access_token, (data) => {
+//     let userId = data.data._id
+//     let searchObj = {
+//       to: userId,
+//       productId: body.productId,
+//       isImportant: body.isImportant,
+//       isUrgent:  body.isUrgent,
+//       level: {$lt: 5}
+//     }
+//     if (body.type > 0) {
+//       searchObj.type = body.type
+//     }
+//     Post.find(searchObj).sort({ updatedAt: -1 }).skip((body.nextPageNo - 1)*body.pageSize).limit(body.pageSize).exec((err, allData) => {
+//       if (err) {
+//         _md.return2(err, res)
+//         return
+//       }
+//       let nextPageNo = body.nextPageNo + 1
+//       if (allData.length < body.pageSize) {
+//         nextPageNo = 0
+//       }
+//       _md.return0({
+//         allData,
+//         nextPageNo
+//       }, res)
+//     })
+//   })
+// })
 
 // 获取全部的任务
-router.post('/allbylevel', _md.signinRequired, (req, res, next) => {
-  let access_token = req.body.access_token
-  let body = req.body.data
-  let productId = body.productId
-  let searchObj = {
-    productId
-  }
-  if (body.level > 0) {
-    searchObj.level = body.level
-  }
-  if (body.type > 0) {
-    searchObj.type = body.type
-  }
-  Post.find(searchObj).sort({ updatedAt: -1 }).skip((body.nextPageNo - 1)*body.pageSize).limit(body.pageSize).populate('to').populate('finisherId').exec((err, allData) => {
-    if (err) {
-      _md.return2(err, res)
-      return
-    }
-    let nextPageNo = body.nextPageNo + 1
-    if (allData.length < body.pageSize) {
-      nextPageNo = 0
-    }
-    _md.return0({
-      allData,
-      nextPageNo
-    }, res)
-  })
-})
+// router.post('/allbylevel', _md.signinRequired, (req, res, next) => {
+//   let access_token = req.body.access_token
+//   let body = req.body.data
+//   let productId = body.productId
+//   let searchObj = {
+//     productId
+//   }
+//   if (body.level > 0) {
+//     searchObj.level = body.level
+//   }
+//   if (body.type > 0) {
+//     searchObj.type = body.type
+//   }
+//   Post.find(searchObj).sort({ updatedAt: -1 }).skip((body.nextPageNo - 1)*body.pageSize).limit(body.pageSize).populate('to').populate('finisherId').exec((err, allData) => {
+//     if (err) {
+//       _md.return2(err, res)
+//       return
+//     }
+//     let nextPageNo = body.nextPageNo + 1
+//     if (allData.length < body.pageSize) {
+//       nextPageNo = 0
+//     }
+//     _md.return0({
+//       allData,
+//       nextPageNo
+//     }, res)
+//   })
+// })
 // 获取全部的任务
 router.post('/allbyfilter', _md.signinRequired, (req, res, next) => {
   let access_token = req.body.access_token
@@ -216,6 +216,7 @@ router.post('/allbyfilter', _md.signinRequired, (req, res, next) => {
   })
 })
 
+// 按标签统计
 router.post('/statisticsTag', _md.signinRequired, (req, res, next) => {
   let access_token = req.body.access_token
   let body = req.body.data
@@ -280,6 +281,7 @@ router.post('/statisticsTag', _md.signinRequired, (req, res, next) => {
     })
   })
 })
+// 按版本统计
 router.post('/statisticsVersion', _md.signinRequired, (req, res, next) => {
   let access_token = req.body.access_token
   let body = req.body.data
