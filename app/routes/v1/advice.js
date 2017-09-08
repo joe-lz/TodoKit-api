@@ -26,7 +26,7 @@ router.post('/allbyfilter', _md.signinRequired, (req, res, next) => {
   let access_token = req.body.access_token
   let body = req.body.data
   // 删除空key
-  Advice.find({level:1}).sort({ updatedAt: -1 }).skip((body.nextPageNo - 1)*body.pageSize).limit(body.pageSize).exec((err, allData) => {
+  Advice.find({level: 1, productId: body.productId}).sort({ updatedAt: -1 }).skip((body.nextPageNo - 1)*body.pageSize).limit(body.pageSize).exec((err, allData) => {
     if (err) {
       _md.return2(err, res)
       return
@@ -45,6 +45,7 @@ router.post('/allbyfilter', _md.signinRequired, (req, res, next) => {
 router.post('/changeLevel', _md.signinRequired, (req, res, next) => {
   let access_token = req.body.access_token
   let body = req.body.data
+  console.log(body)
   Advice.update({productId: body.productId}, {$set: {level: body.level}}).exec((err, result) => {
     if (err) {
       _md.return2(err, res)
