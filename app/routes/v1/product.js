@@ -25,7 +25,7 @@ router.post('/my', _md.signinRequired, (req, res, next) => {
   })
 })
 // 获取产品消息
-router.post('/info', _md.signinRequired, (req, res, next) => {
+router.post('/info', (req, res, next) => {
   let access_token = req.body.access_token
   let body = req.body.data
   Product.findOne({_id: body.productId}).exec((err, curProduct) => {

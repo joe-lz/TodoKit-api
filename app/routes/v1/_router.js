@@ -16,4 +16,7 @@ module.exports = function(app) {
 
   const upload = require('./upload')
   app.use('/v1/upload', upload)
+
+  const advice = require('./advice')
+  app.use('/v1/advice', advice)
 }

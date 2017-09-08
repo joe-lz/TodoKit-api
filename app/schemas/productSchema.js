@@ -3,8 +3,8 @@ let mongoose = require('mongoose');
 let ProductSchema = new mongoose.Schema({
   name: String,
   logo: {
-    type: 'String'
-    // default: 'https://ws2.sinaimg.cn/large/006tNc79gy1fhmcbjfpnuj30780783yb.jpg'
+    type: 'String',
+    default: 'productlogo/09023417-ef12-491d-a0d9-6e73e80d3c3d1504771532791'
   },
   createrId: {
     type:  mongoose.Schema.Types.ObjectId,

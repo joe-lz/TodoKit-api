@@ -8,7 +8,7 @@ let qiniu = require('qiniu')
 let mac = new qiniu.auth.digest.Mac(Config.qiniu.AccessKey, Config.qiniu.SecretKey)
 
 // 生成token
-router.post('/qiniutoken', _md.signinRequired, (req, res, next) => {
+router.post('/qiniutoken', (req, res, next) => {
   let body = req.body
   let options = {
     scope: Config.qiniu.bucket
