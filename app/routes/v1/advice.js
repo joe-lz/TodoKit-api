@@ -45,7 +45,7 @@ router.post('/allbyfilter', _md.signinRequired, (req, res, next) => {
 router.post('/changeLevel', _md.signinRequired, (req, res, next) => {
   let access_token = req.body.access_token
   let body = req.body.data
-  Advice.update({productId: body.productId}, {$set: {level: body.level}}).exec((err, result) => {
+  Advice.update({productId: body.productId, level: 1}, {$set: {level: body.level}}).exec((err, result) => {
     if (err) {
       _md.return2(err, res)
       return
