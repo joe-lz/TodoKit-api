@@ -18,6 +18,10 @@ router.post('/create', (req, res, next) => {
       _md.return2(err, res)
       return
     }
+    res.io.emit('NewAdvice', {
+      to: body.productId,
+      content: '当前产品有新的意见收集，赶紧处理吧'
+    })
     _md.return0({curAdvice}, res)
   })
 })
