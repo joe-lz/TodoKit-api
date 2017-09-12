@@ -59,4 +59,16 @@ router.post('/changeLevel', _md.signinRequired, (req, res, next) => {
     }, res)
   })
 })
+// 删除
+router.post('/del', _md.signinRequired, (req, res, next) => {
+  let access_token = req.body.access_token
+  let body = req.body.data
+  Advice.remove({_id: body._id}).exec((err, result) => {
+    if (err) {
+      _md.return2(err, res)
+      return
+    }
+    _md.return0({result}, res)
+  })
+})
 module.exports = router;
