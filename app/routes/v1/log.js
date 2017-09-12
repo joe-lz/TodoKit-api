@@ -129,6 +129,9 @@ router.post('/all', _md.signinRequired, (req, res, next) => {
           _md.return2(err2, res)
           return
         }
+        res.io.emit('ChangeIsRead', {
+          postId: body.postId
+        })
         _md.return0({
           allData
         }, res)
