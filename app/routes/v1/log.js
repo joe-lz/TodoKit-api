@@ -143,6 +143,28 @@ router.post('/my', _md.signinRequired, (req, res, next) => {
   _md.decodeToken(access_token, (data) => {
     let userId = data.data._id
     // 2、创建curLog
+    Log.find({productId: body.productId, to: userId, isRead: body.isRead}).sort({ createdAt: -1 }).skip((body.nextPageNo - 1)*body.pageSize).limit(body.pageSize).populate('from').populate('to').populate('postId').exec((err, allData) => {
+      if (err) {
+        _md.return2(err, res)
+        return
+      }
+      let nextPageNo = body.nextPageNo + 1
+      if (allData.length < body.pageSize) {
+        nextPageNo = 0
+      }
+      _md.return0({
+        allData,
+        nextPageNo
+      }, res)
+    })
+  })
+})
+router.post('/myall', _md.signinRequired, (req, res, next) => {
+  let access_token = req.body.access_token
+  let body = req.body.data
+  _md.decodeToken(access_token, (data) => {
+    let userId = data.data._id
+    // 2、创建curLog
     Log.find({productId: body.productId, to: userId}).sort({ createdAt: -1 }).skip((body.nextPageNo - 1)*body.pageSize).limit(body.pageSize).populate('from').populate('to').populate('postId').exec((err, allData) => {
       if (err) {
         _md.return2(err, res)
@@ -159,6 +181,5 @@ router.post('/my', _md.signinRequired, (req, res, next) => {
     })
   })
 })
-
 
 module.exports = router;
