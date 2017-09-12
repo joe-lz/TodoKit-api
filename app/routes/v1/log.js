@@ -143,7 +143,7 @@ router.post('/my', _md.signinRequired, (req, res, next) => {
   _md.decodeToken(access_token, (data) => {
     let userId = data.data._id
     // 2、创建curLog
-    Log.find({productId: body.productId, to: userId, isRead: body.isRead}).sort({ createdAt: -1 }).skip((body.nextPageNo - 1)*body.pageSize).limit(body.pageSize).populate('from').populate('to').populate('postId').exec((err, allData) => {
+    Log.find({productId: body.productId, to: userId}).sort({ createdAt: -1 }).skip((body.nextPageNo - 1)*body.pageSize).limit(body.pageSize).populate('from').populate('to').populate('postId').exec((err, allData) => {
       if (err) {
         _md.return2(err, res)
         return
