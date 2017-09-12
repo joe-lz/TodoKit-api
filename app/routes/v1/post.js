@@ -66,7 +66,7 @@ router.post('/my', _md.signinRequired, (req, res, next) => {
     }
     if (body.type === "my") {
       // -1 是我创建的
-      Post.find({productId, createrId: userId, level: {$lt: 5}}).sort({ updatedAt: -1 }).skip((body.nextPageNo - 1)*body.pageSize).limit(body.pageSize).populate('to').exec((err, allData) => {
+      Post.find({productId, createrId: userId, level: {$lt: 5}}).sort({ createdAt: -1 }).skip((body.nextPageNo - 1)*body.pageSize).limit(body.pageSize).populate('to').exec((err, allData) => {
         if (err) {
           _md.return2(err, res)
           return
@@ -82,7 +82,7 @@ router.post('/my', _md.signinRequired, (req, res, next) => {
         console.log(allData)
       })
     } else {
-      Post.find(searchObj).sort({ updatedAt: -1 }).skip((body.nextPageNo - 1)*body.pageSize).limit(body.pageSize).populate('to').exec((err, allData) => {
+      Post.find(searchObj).sort({ createdAt: -1 }).skip((body.nextPageNo - 1)*body.pageSize).limit(body.pageSize).populate('to').exec((err, allData) => {
         if (err) {
           _md.return2(err, res)
           return
@@ -114,7 +114,7 @@ router.post('/mycreate', _md.signinRequired, (req, res, next) => {
     if (level > 0) {
       searchObj.level = level
     }
-    Post.find(searchObj).sort({ updatedAt: -1 }).skip((body.nextPageNo - 1)*body.pageSize).limit(body.pageSize).populate('to').exec((err, allData) => {
+    Post.find(searchObj).sort({ createdAt: -1 }).skip((body.nextPageNo - 1)*body.pageSize).limit(body.pageSize).populate('to').exec((err, allData) => {
       if (err) {
         _md.return2(err, res)
         return
@@ -147,7 +147,7 @@ router.post('/mycreate', _md.signinRequired, (req, res, next) => {
 //     if (body.type > 0) {
 //       searchObj.type = body.type
 //     }
-//     Post.find(searchObj).sort({ updatedAt: -1 }).skip((body.nextPageNo - 1)*body.pageSize).limit(body.pageSize).exec((err, allData) => {
+//     Post.find(searchObj).sort({ createdAt: -1 }).skip((body.nextPageNo - 1)*body.pageSize).limit(body.pageSize).exec((err, allData) => {
 //       if (err) {
 //         _md.return2(err, res)
 //         return
@@ -178,7 +178,7 @@ router.post('/mycreate', _md.signinRequired, (req, res, next) => {
 //   if (body.type > 0) {
 //     searchObj.type = body.type
 //   }
-//   Post.find(searchObj).sort({ updatedAt: -1 }).skip((body.nextPageNo - 1)*body.pageSize).limit(body.pageSize).populate('to').populate('finisherId').exec((err, allData) => {
+//   Post.find(searchObj).sort({ createdAt: -1 }).skip((body.nextPageNo - 1)*body.pageSize).limit(body.pageSize).populate('to').populate('finisherId').exec((err, allData) => {
 //     if (err) {
 //       _md.return2(err, res)
 //       return
@@ -200,7 +200,7 @@ router.post('/allbyfilter', _md.signinRequired, (req, res, next) => {
   // 删除空key
   let searchObj = _.pickBy(body.formData, _.identity)
   // searchObj = _.omit(searchObj, ['nextPageNo', 'pageSize'])
-  Post.find(searchObj).sort({ updatedAt: -1 }).skip((body.nextPageNo - 1)*body.pageSize).limit(body.pageSize).populate('to').populate('finisherId').exec((err, allData) => {
+  Post.find(searchObj).sort({ createdAt: -1 }).skip((body.nextPageNo - 1)*body.pageSize).limit(body.pageSize).populate('to').populate('finisherId').exec((err, allData) => {
     if (err) {
       _md.return2(err, res)
       return
