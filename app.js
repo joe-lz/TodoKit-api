@@ -50,6 +50,7 @@ app.use(function(req, res, next) {
   next();
 });
 require('./app/routes/v1/_router')(app)
+require('./app/routes/v2/_router')(app)
 app.set('json spaces', 2)
 
 
