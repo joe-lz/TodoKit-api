@@ -48,7 +48,20 @@ router.post('/create', _md.signinRequired, (req, res, next) => {
     })
   })
 })
-
+// 更新post
+router.post('/update', _md.signinRequired, (req, res, next) => {
+  let access_token = req.body.access_token
+  let body = req.body.data
+  Post.update({_id: body._id}, {$set: {tag: body.tag}}).exec((err, result) => {
+    if (err) {
+      _md.return2(err, res)
+      return
+    }
+    _md.return0({
+      result
+    }, res)
+  })
+})
 // 获取指派给我的任务
 router.post('/my', _md.signinRequired, (req, res, next) => {
   let access_token = req.body.access_token

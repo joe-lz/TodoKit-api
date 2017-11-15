@@ -79,7 +79,7 @@ router.post('/create', _md.signinRequired, (req, res, next) => {
         }
         res.io.emit('NewLog', {
           to: body.to,
-          content: curLog.content,
+          content: '一个新消息等待你查看',
           curLog: curLog
         })
         _md.return0({curLog}, res)
