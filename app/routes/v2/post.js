@@ -217,6 +217,11 @@ router.post('/allbyfilter', _md.signinRequired, (req, res, next) => {
   let body = req.body.data
   // 删除空key
   let searchObj = _.pickBy(body.formData, _.identity)
+  // 限制必须传productId
+  if (!searchObj.productId) {
+    _md.return1('参数不正确', {}, res)
+    return
+  }
   // searchObj = _.omit(searchObj, ['nextPageNo', 'pageSize'])
   Post.find(searchObj).sort({ createdAt: -1 }).skip((body.nextPageNo - 1)*body.pageSize).limit(body.pageSize).populate('to').populate('finisherId').exec((err, allData) => {
     if (err) {
