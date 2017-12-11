@@ -4,7 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var Config = require('./app/routes/v1/_config.js');
+var Config = require('./app/routes/v3/_config.js');
 
 
 // 链接数据库vi
