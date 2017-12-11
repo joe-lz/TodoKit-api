@@ -4,7 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var Config = require('./app/routes/v1/_config.js');
+var Config = require('./app/routes/v3/_config.js');
 
 
 // 链接数据库vi
@@ -49,8 +49,8 @@ app.use(function(req, res, next) {
   res.setHeader('Access-Control-Allow-Credentials', true);
   next();
 });
-require('./app/routes/v1/_router')(app)
-require('./app/routes/v2/_router')(app)
+
+require('./app/routes/v3/_router')(app)
 app.set('json spaces', 2)
 
 
