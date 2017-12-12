@@ -8,3 +8,6 @@ npm-debug.log
 npm-debug.log.*
 thumbs.db
 !.gitkeep
+
+v1/
+v2/
