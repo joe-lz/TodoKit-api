@@ -33,8 +33,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(function(req, res, next) {
   var allowedOrigins = [
-      'http://127.0.0.1:9080',
-      'http://localhost:9080',
+      'http://127.0.0.1:9090',
+      'http://localhost:9090',
       'http://127.0.0.1:4101',
       'https://www.todokit.vip'
     ];
